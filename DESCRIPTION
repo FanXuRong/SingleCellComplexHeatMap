@@ -1,0 +1,35 @@
+Package: SingleCellComplexHeatMap
+Type: Package
+Title: Complex Heatmaps for Single Cell Expression Data with Dual Information Display
+Version: 0.1.0
+Authors@R: person("XueCheng","Fang", email = "xuecheng328@gmail.com", role = c("aut", "cre"))
+Maintainer: XueCheng Fang <xuecheng328@gmail.com>
+Description: Creates complex heatmaps for single cell RNA-seq data that simultaneously 
+    display gene expression levels (as color intensity) and expression percentages 
+    (as circle sizes). Supports gene grouping, cell type annotations, and time point 
+    comparisons. Built on top of ComplexHeatmap and integrates with Seurat objects.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.0.0)
+Imports:
+    ComplexHeatmap (>= 2.10.0),
+    Seurat (>= 4.0.0),
+    dplyr (>= 1.0.0),
+    tidyr (>= 1.0.0),
+    RColorBrewer,
+    circlize (>= 0.4.0),
+    grid,
+    grDevices,
+    stats,
+    magrittr
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    viridis,
+    devtools,
+    BiocManager
+URL: https://github.com/xuecheng328/SingleCellComplexHeatMap
+BugReports: https://github.com/xuecheng328/SingleCellComplexHeatMap/issues
