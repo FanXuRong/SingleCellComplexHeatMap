@@ -1,0 +1,114 @@
+* using log directory ‘/public3/home/fanxr/SingleCellComplexHeatMap/SingleCellComplexHeatMap.Rcheck’
+* using R version 4.3.3 (2024-02-29)
+* using platform: x86_64-conda-linux-gnu (64-bit)
+* R was compiled by
+    x86_64-conda-linux-gnu-cc (conda-forge gcc 10.4.0-19) 10.4.0
+    GNU Fortran (conda-forge gcc 10.4.0-19) 10.4.0
+* running under: CentOS Linux 7 (Core)
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘SingleCellComplexHeatMap/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘SingleCellComplexHeatMap’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [6s/29s] NOTE
+Maintainer: ‘XueCheng Fang <xuecheng328@gmail.com>’
+
+New submission
+
+License components with restrictions and base license permitting such:
+  MIT + file LICENSE
+File 'LICENSE':
+  # MIT License
+  
+  Copyright (c) 2025 SingleCellComplexHeatMap authors
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘SingleCellComplexHeatMap’ can be installed ... [44s/53s] OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... NOTE
+unable to verify current time
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... [11s/13s] OK
+* checking whether the package can be loaded with stated dependencies ... [10s/12s] OK
+* checking whether the package can be unloaded cleanly ... [11s/13s] OK
+* checking whether the namespace can be loaded with stated dependencies ... [11s/13s] OK
+* checking whether the namespace can be unloaded cleanly ... [11s/13s] OK
+* checking loading without being on the library search path ... [11s/14s] OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... [75s/58s] OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+ WARNING
+‘qpdf’ is needed for checks on size reduction of PDFs
+* checking installed files from ‘inst/doc’ ... OK
+* checking examples ... [13s/15s] OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... [16s/16s] OK
+  Running ‘testthat.R’ [12s/15s]
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+LaTeX errors found:
+! LaTeX Error: File `inconsolata.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+! Emergency stop.
+<read *> 
+         
+l.303 ^^M
+         
+!  ==> Fatal error occurred, no output PDF file produced!
+* checking PDF version of manual without index ... OK
+* checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found
+* checking for non-standard things in the check directory ... NOTE
+Found the following files/directories:
+  ‘SingleCellComplexHeatMap-manual.tex’
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 2 WARNINGs, 4 NOTEs

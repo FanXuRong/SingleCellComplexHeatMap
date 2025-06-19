@@ -1,0 +1,11 @@
+create_cell_annotations
+                        Create Cell Type and Time Point Annotations for
+                        Heatmap Columns
+create_gene_annotations
+                        Create Gene Group Annotations for Heatmap Rows
+create_single_cell_complex_heatmap
+                        Create Complex Heatmap for Single Cell
+                        Expression Data
+prepare_expression_matrices
+                        Prepare Expression and Percentage Matrices from
+                        Seurat DotPlot

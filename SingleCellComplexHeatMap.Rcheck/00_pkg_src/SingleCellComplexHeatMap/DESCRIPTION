@@ -1,7 +1,8 @@
 Package: SingleCellComplexHeatMap
 Type: Package
-Title: Complex Heatmaps for Single Cell Expression Data with Dual Information Display
-Version: 0.1.1
+Title: Complex Heatmaps for Single Cell Expression Data with Dual
+        Information Display
+Version: 0.1.0
 Authors@R: person("XueCheng","Fang", email = "xuecheng328@gmail.com", role = c("aut", "cre"))
 Maintainer: XueCheng Fang <xuecheng328@gmail.com>
 Description: Creates complex heatmaps for single cell RNA-seq data that simultaneously 
@@ -12,25 +13,14 @@ Description: Creates complex heatmaps for single cell RNA-seq data that simultan
 License: MIT + file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.3.2
-Depends:
-    R (>= 4.0.0)
-Imports:
-    ComplexHeatmap (>= 2.10.0),
-    Seurat (>= 4.0.0),
-    dplyr (>= 1.0.0),
-    tidyr (>= 1.0.0),
-    RColorBrewer,
-    circlize (>= 0.4.0),
-    grid,
-    grDevices,
-    stats,
-    magrittr
-Suggests:
-    testthat (>= 3.0.0),
-    knitr,
-    rmarkdown,
-    viridis,
-    devtools,
-    BiocManager
+Depends: R (>= 4.0.0)
+Imports: ComplexHeatmap (>= 2.10.0), Seurat (>= 4.0.0), dplyr (>=
+        1.0.0), tidyr (>= 1.0.0), RColorBrewer, circlize (>= 0.4.0),
+        grid, grDevices, stats, magrittr
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown, viridis, devtools,
+        BiocManager
 URL: https://github.com/FanXuRong/SingleCellComplexHeatMap
 BugReports: https://github.com/FanXuRong/SingleCellComplexHeatMap/issues
+NeedsCompilation: no
+Packaged: 2025-06-19 17:31:49 UTC; fanxr
+Author: XueCheng Fang [aut, cre]
