@@ -1,0 +1,450 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `SingleCellComplexHeatMap'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {SingleCellComplexHeatMap: Complex Heatmaps for Single Cell Expression Data with Dual Information Display}}}{}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdfauthor = {XueCheng Fang}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Complex Heatmaps for Single Cell Expression Data with Dual
+Information Display}
+\item[Version]\AsIs{0.1.1}
+\item[Maintainer]\AsIs{XueCheng Fang }\email{xuecheng328@gmail.com}\AsIs{}
+\item[Description]\AsIs{Creates complex heatmaps for single cell RNA-seq data that simultaneously 
+display gene expression levels (as color intensity) and expression percentages 
+(as circle sizes). Supports gene grouping, cell type annotations, and time point 
+comparisons. Built on top of 'ComplexHeatmap' and integrates with 'Seurat' objects.
+For more details see Gu (2022) <}\Rhref{https://doi.org/10.1002/imt2.43}{doi:10.1002/imt2.43}\AsIs{> and Hao (2024) <}\Rhref{https://doi.org/10.1038/s41587-023-01767-y}{doi:10.1038/s41587-023-01767-y}\AsIs{>.}
+\item[License]\AsIs{MIT + file LICENSE}
+\item[Encoding]\AsIs{UTF-8}
+\item[RoxygenNote]\AsIs{7.3.2}
+\item[Depends]\AsIs{R (>= 4.0.0)}
+\item[Imports]\AsIs{ComplexHeatmap (>= 2.10.0), Seurat (>= 4.0.0), dplyr (>=
+1.0.0), tidyr (>= 1.0.0), RColorBrewer, circlize (>= 0.4.0),
+grid, grDevices, stats, magrittr}
+\item[Suggests]\AsIs{testthat (>= 3.0.0), knitr, rmarkdown, viridis, devtools,
+BiocManager}
+\item[URL]\AsIs{}\url{https://github.com/FanXuRong/SingleCellComplexHeatMap}\AsIs{}
+\item[BugReports]\AsIs{}\url{https://github.com/FanXuRong/SingleCellComplexHeatMap/issues}\AsIs{}
+\item[NeedsCompilation]\AsIs{no}
+\item[Author]\AsIs{XueCheng Fang [aut, cre]}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{create\_cell\_annotations}{Create Cell Type and Time Point Annotations for Heatmap Columns}{create.Rul.cell.Rul.annotations}
+%
+\begin{Description}
+Parses column names to extract time points and cell types, creates annotations and reorders matrices.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+create_cell_annotations(
+  exp_mat,
+  percent_mat,
+  split_pattern = "_",
+  time_position = 1,
+  celltype_start = 2,
+  time_points_order = NULL,
+  cell_types_order = NULL,
+  time_color_palette = "Accent",
+  celltype_color_palette = "Dark2",
+  show_time_annotation = TRUE,
+  show_celltype_annotation = TRUE
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{exp\_mat}] Expression matrix with samples as columns
+
+\item[\code{percent\_mat}] Percentage matrix with samples as columns
+
+\item[\code{split\_pattern}] Character string used to split column names (default: "\_")
+
+\item[\code{time\_position}] Integer indicating position of time point in split names (default: 1)
+
+\item[\code{celltype\_start}] Integer indicating starting position of cell type in split names (default: 2)
+
+\item[\code{time\_points\_order}] Character vector specifying order of time points (default: NULL for automatic)
+
+\item[\code{cell\_types\_order}] Character vector specifying order of cell types (default: NULL for automatic)
+
+\item[\code{time\_color\_palette}] Character string specifying RColorBrewer palette for time points (default: "Accent")
+
+\item[\code{celltype\_color\_palette}] Character string specifying RColorBrewer palette for cell types (default: "Dark2")
+
+\item[\code{show\_time\_annotation}] Logical indicating whether to show time point annotation (default: TRUE)
+
+\item[\code{show\_celltype\_annotation}] Logical indicating whether to show cell type annotation (default: TRUE)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list containing exp\_mat\_ordered (reordered expression matrix), percent\_mat\_ordered (reordered percentage matrix), col\_annotation (ComplexHeatmap column annotation object), col\_split\_factor (factor for column splitting based on time points), and annotation\_df (data frame with column annotations).
+\end{Value}
+%
+\begin{SeeAlso}
+\code{\LinkA{create\_single\_cell\_complex\_heatmap}{create.Rul.single.Rul.cell.Rul.complex.Rul.heatmap}}, \code{\LinkA{prepare\_expression\_matrices}{prepare.Rul.expression.Rul.matrices}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+# Prepare expression matrices first
+matrices <- prepare_expression_matrices(seurat_obj, features, group_by = "timepoint_celltype")
+
+# Create cell annotations with custom ordering
+col_annotations <- create_cell_annotations(
+  exp_mat = matrices$exp_mat,
+  percent_mat = matrices$percent_mat,
+  split_pattern = "_",
+  time_points_order = c("0h", "6h", "12h", "24h"),
+  cell_types_order = c("T_cell", "B_cell", "Monocyte"),
+  time_color_palette = "Set2",
+  celltype_color_palette = "Dark2"
+)
+
+# Access results
+ordered_exp_mat <- col_annotations$exp_mat_ordered
+col_annotation <- col_annotations$col_annotation
+col_split_factor <- col_annotations$col_split_factor
+
+## End(Not run)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{create\_gene\_annotations}{Create Gene Group Annotations for Heatmap Rows}{create.Rul.gene.Rul.annotations}
+%
+\begin{Description}
+Creates gene grouping annotations and reorders expression matrices based on gene classifications.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+create_gene_annotations(
+  exp_mat,
+  percent_mat,
+  gene_classification,
+  color_palette = "Set1",
+  sort_within_groups = TRUE
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{exp\_mat}] Expression matrix with genes as rows
+
+\item[\code{percent\_mat}] Percentage matrix with genes as rows
+
+\item[\code{gene\_classification}] Named list where names are group labels and values are character vectors of gene names
+
+\item[\code{color\_palette}] Character string specifying RColorBrewer palette name (default: "Set1")
+
+\item[\code{sort\_within\_groups}] Logical indicating whether to sort genes within each group (default: TRUE)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list containing exp\_mat\_ordered (reordered expression matrix), percent\_mat\_ordered (reordered percentage matrix), row\_annotation (ComplexHeatmap row annotation object), row\_split\_factor (factor for row splitting), and annotation\_df (data frame with gene annotations).
+\end{Value}
+%
+\begin{SeeAlso}
+\code{\LinkA{create\_single\_cell\_complex\_heatmap}{create.Rul.single.Rul.cell.Rul.complex.Rul.heatmap}}, \code{\LinkA{prepare\_expression\_matrices}{prepare.Rul.expression.Rul.matrices}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+# Prepare expression matrices first
+matrices <- prepare_expression_matrices(seurat_obj, features, group_by = "cell_type")
+
+# Define gene groups
+gene_groups <- list(
+  "Immune_Response" = c("Gene1", "Gene2"),
+  "Cell_Cycle" = c("Gene3", "Gene4"),
+  "Metabolism" = c("Gene5", "Gene6")
+)
+
+# Create gene annotations
+annotations <- create_gene_annotations(
+  exp_mat = matrices$exp_mat,
+  percent_mat = matrices$percent_mat,
+  gene_classification = gene_groups,
+  color_palette = "Set1"
+)
+
+# Access results
+ordered_exp_mat <- annotations$exp_mat_ordered
+ordered_percent_mat <- annotations$percent_mat_ordered
+row_annotation <- annotations$row_annotation
+
+## End(Not run)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{create\_single\_cell\_complex\_heatmap}{Create Complex Heatmap for Single Cell Expression Data}{create.Rul.single.Rul.cell.Rul.complex.Rul.heatmap}
+%
+\begin{Description}
+Creates a complex heatmap that displays both gene expression levels (as color intensity) 
+and expression percentages (as circle sizes) for single cell RNA-seq data.
+This function provides extensive customization options while maintaining ease of use.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+create_single_cell_complex_heatmap(
+  seurat_object,
+  features,
+  gene_classification = NULL,
+  group_by = "seurat_clusters",
+  idents = NULL,
+  time_points_order = NULL,
+  cell_types_order = NULL,
+  color_range = c(-1, 0, 2),
+  color_palette = NULL,
+  max_circle_size = 2,
+  row_fontsize = 8,
+  col_fontsize = 9,
+  col_name_rotation = 90,
+  row_title_fontsize = 10,
+  col_title_fontsize = 10,
+  show_heatmap_legend = TRUE,
+  show_percentage_legend = TRUE,
+  legend_side = "right",
+  cell_border_color = "grey80",
+  split_pattern = "_",
+  gene_color_palette = "Set1",
+  time_color_palette = "Accent",
+  celltype_color_palette = "Dark2",
+  show_gene_grouping = NULL,
+  show_time_annotation = TRUE,
+  show_celltype_annotation = TRUE,
+  split_by = "time",
+  merge_legends = TRUE,
+  percentage_legend_title = "Expression %",
+  percentage_legend_labels = c("0%", "25%", "50%", "75%", "100%"),
+  percentage_breaks = NULL,
+  return_data = FALSE,
+  save_plot = NULL,
+  plot_width = 10,
+  plot_height = 8,
+  plot_dpi = 300,
+  assay = NULL,
+  slot = "scale.data",
+  cluster_cells = TRUE,
+  cluster_features = TRUE,
+  clustering_distance_rows = "euclidean",
+  clustering_distance_cols = "euclidean",
+  clustering_method_rows = "complete",
+  clustering_method_cols = "complete",
+  color_palette_main = c("blue", "white", "red"),
+  annotation_colors = NULL,
+  show_feature_names = TRUE,
+  feature_names_gp = NULL,
+  legend_title = "Expression",
+  ...
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{seurat\_object}] A Seurat object containing single cell data
+
+\item[\code{features}] Character vector of gene names to plot
+
+\item[\code{gene\_classification}] Named list where names are group labels and values are character vectors of gene names (default: NULL for no gene grouping)
+
+\item[\code{group\_by}] Character string specifying the metadata column to group by (default: "seurat\_clusters")
+
+\item[\code{idents}] Numeric or character vector specifying which cell groups to include (default: NULL for all)
+
+\item[\code{time\_points\_order}] Character vector specifying order of time points. Only affects display order, not data filtering (default: NULL for automatic)
+
+\item[\code{cell\_types\_order}] Character vector specifying order of cell types. Only affects display order, not data filtering (default: NULL for automatic)
+
+\item[\code{color\_range}] Numeric vector specifying color mapping break points for expression values. Its length must match color\_palette if color\_palette is a vector. (default: c(-1, 0, 2))
+
+\item[\code{color\_palette}] Character vector specifying colors for expression heatmap. Its length must match color\_range. If NULL, a default palette (viridis or color\_palette\_main) is generated to match color\_range length (default: NULL)
+
+\item[\code{max\_circle\_size}] Numeric specifying maximum circle radius in mm. This applies to the highest percentage value in percentage\_breaks (default: 2)
+
+\item[\code{row\_fontsize}] Numeric specifying row name font size (default: 8)
+
+\item[\code{col\_fontsize}] Numeric specifying column name font size (default: 9)
+
+\item[\code{col\_name\_rotation}] Numeric specifying column name rotation angle (default: 90)
+
+\item[\code{row\_title\_fontsize}] Numeric specifying row title font size (default: 10)
+
+\item[\code{col\_title\_fontsize}] Numeric specifying column title font size (default: 10)
+
+\item[\code{show\_heatmap\_legend}] Logical indicating whether to show heatmap legend (default: TRUE)
+
+\item[\code{show\_percentage\_legend}] Logical indicating whether to show percentage legend (default: TRUE)
+
+\item[\code{legend\_side}] Character string specifying legend position (default: "right")
+
+\item[\code{cell\_border\_color}] Character string specifying cell border color (default: "grey80")
+
+\item[\code{split\_pattern}] Character string used to split column names for parsing (default: "\_")
+
+\item[\code{gene\_color\_palette}] Character string specifying RColorBrewer palette for gene groups (default: "Set1")
+
+\item[\code{time\_color\_palette}] Character string specifying RColorBrewer palette for time points (default: "Accent")
+
+\item[\code{celltype\_color\_palette}] Character string specifying RColorBrewer palette for cell types (default: "Dark2")
+
+\item[\code{show\_gene\_grouping}] Logical indicating whether to show gene grouping (default: TRUE if gene\_classification provided)
+
+\item[\code{show\_time\_annotation}] Logical indicating whether to show time point annotation (default: TRUE)
+
+\item[\code{show\_celltype\_annotation}] Logical indicating whether to show cell type annotation (default: TRUE)
+
+\item[\code{split\_by}] Character string specifying how to split columns: "time", "celltype", or "none" (default: "time")
+
+\item[\code{merge\_legends}] Logical indicating whether to merge legends (default: TRUE)
+
+\item[\code{percentage\_legend\_title}] Character string for percentage legend title (default: "Expression \%")
+
+\item[\code{percentage\_legend\_labels}] Character vector for percentage legend labels
+
+\item[\code{percentage\_breaks}] Numeric vector specifying actual percentage values corresponding to labels
+
+\item[\code{return\_data}] Logical; if TRUE, return underlying data instead of drawing only
+
+\item[\code{save\_plot}] File path to save the drawn heatmap (PNG)
+
+\item[\code{plot\_width}] Numeric; width in inches for saving
+
+\item[\code{plot\_height}] Numeric; height in inches for saving
+
+\item[\code{plot\_dpi}] Numeric; resolution (DPI) for saved plot
+
+\item[\code{assay}] Seurat assay name to extract data from
+
+\item[\code{slot}] Seurat slot name within assay (e.g., "scale.data", "data")
+
+\item[\code{cluster\_cells}] Logical; whether to cluster columns (cells)
+
+\item[\code{cluster\_features}] Logical; whether to cluster rows (features)
+
+\item[\code{clustering\_distance\_rows}] Distance metric for row clustering
+
+\item[\code{clustering\_distance\_cols}] Distance metric for column clustering
+
+\item[\code{clustering\_method\_rows}] Clustering method for rows
+
+\item[\code{clustering\_method\_cols}] Clustering method for columns
+
+\item[\code{color\_palette\_main}] Fallback color palette when viridis unavailable
+
+\item[\code{annotation\_colors}] Named list of custom annotation colors
+
+\item[\code{show\_feature\_names}] Logical; whether to show feature (row) names
+
+\item[\code{feature\_names\_gp}] gpar object controlling feature name appearance
+
+\item[\code{legend\_title}] Character; title for main heatmap legend
+
+\item[\code{...}] Additional arguments passed to ComplexHeatmap::Heatmap()
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A ComplexHeatmap object. If return\_data is TRUE, returns a list containing the heatmap object and underlying data matrices.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{prepare\_expression\_matrices}{Prepare Expression and Percentage Matrices from Seurat DotPlot}{prepare.Rul.expression.Rul.matrices}
+%
+\begin{Description}
+Extracts and reshapes expression data from a Seurat DotPlot object into
+matrices suitable for complex heatmap visualization.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+prepare_expression_matrices(
+  seurat_object,
+  features,
+  group_by = "seurat_clusters",
+  idents = NULL,
+  split_pattern = "_",
+  time_position = 1,
+  celltype_start = 2
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{seurat\_object}] A Seurat object containing single cell data
+
+\item[\code{features}] Character vector of gene names to plot
+
+\item[\code{group\_by}] Character string specifying the metadata column to group by (default: "seurat\_clusters")
+
+\item[\code{idents}] Numeric or character vector specifying which cell groups to include (default: NULL for all)
+
+\item[\code{split\_pattern}] Character string used to split column names for parsing (default: "\_")
+
+\item[\code{time\_position}] Integer indicating position of time point in split names (default: 1)
+
+\item[\code{celltype\_start}] Integer indicating starting position of cell type in split names (default: 2)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list containing exp\_mat (matrix of scaled expression values), percent\_mat (matrix of expression percentages), and dotplot\_data (original DotPlot data frame).
+\end{Value}
+%
+\begin{SeeAlso}
+\code{\LinkA{create\_single\_cell\_complex\_heatmap}{create.Rul.single.Rul.cell.Rul.complex.Rul.heatmap}}
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+# Basic usage
+matrices <- prepare_expression_matrices(
+  seurat_object = my_seurat,
+  features = c("Gene1", "Gene2", "Gene3"),
+  group_by = "cell_type"
+)
+
+# Advanced usage with specific cell groups
+matrices <- prepare_expression_matrices(
+  seurat_object = my_seurat,
+  features = gene_list,
+  group_by = "timepoint_celltype",
+  idents = c("0h_T_cell", "6h_T_cell", "12h_T_cell"),
+  split_pattern = "_"
+)
+
+# Access the results
+expression_matrix <- matrices$exp_mat
+percentage_matrix <- matrices$percent_mat
+original_data <- matrices$dotplot_data
+
+## End(Not run)
+
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}

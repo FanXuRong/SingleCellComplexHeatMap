@@ -1,0 +1,36 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-conda-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library(testthat)
+> library(SingleCellComplexHeatMap)
+> 
+> test_check("SingleCellComplexHeatMap")
+[ FAIL 0 | WARN 0 | SKIP 5 | PASS 0 ]
+
+══ Skipped tests (5) ═══════════════════════════════════════════════════════════
+• Requires mock Seurat object (1): 'test-main-functions.R:2:3'
+• Requires mock Seurat object for testing (2):
+  'test-prepare_expression_matrices.R:6:3',
+  'test-prepare_expression_matrices.R:17:3'
+• empty test (2): 'test-main-functions.R:7:1', 'test-main-functions.R:14:1'
+
+[ FAIL 0 | WARN 0 | SKIP 5 | PASS 0 ]
+> 
+> proc.time()
+   user  system elapsed 
+ 10.886   0.802  15.064 
