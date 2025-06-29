@@ -2,7 +2,7 @@
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 10,
+  fig.width = 12,
   fig.height = 8,
   warning = FALSE,
   message = FALSE
@@ -10,15 +10,19 @@ knitr::opts_chunk$set(
 
 ## ----eval=FALSE---------------------------------------------------------------
 # # Install from GitHub
-# devtools::install_github("xuecheng328/SingleCellComplexHeatMap")
-# 
-# # Or install locally
-# devtools::install_local("/path/to/SingleCellComplexHeatMap")
+# devtools::install_github("FanXuRong/SingleCellComplexHeatMap")
 
 ## ----setup--------------------------------------------------------------------
 library(SingleCellComplexHeatMap)
 library(Seurat)
 library(dplyr)
+# Load optional color packages for testing
+if (requireNamespace("ggsci", quietly = TRUE)) {
+  library(ggsci)
+}
+if (requireNamespace("viridis", quietly = TRUE)) {
+  library(viridis)
+}
 
 # For this vignette, we'll use the built-in pbmc_small dataset
 data("pbmc_small", package = "SeuratObject")
@@ -33,7 +37,7 @@ seurat_obj$group <- paste(seurat_obj$timepoint, seurat_obj$celltype, sep = "_")
 # Check the structure
 head(seurat_obj@meta.data)
 
-## ----basic_example, fig.width=8, fig.height=6---------------------------------
+## ----basic_example, fig.width=12, fig.height=8--------------------------------
 # Define genes to visualize
 features <- c("CD3D", "CD3E", "CD8A", "IL32", "CD79A")
 
@@ -44,7 +48,7 @@ heatmap_basic <- create_single_cell_complex_heatmap(
   group_by = "group"
 )
 
-## ----advanced_example, fig.width=10, fig.height=8-----------------------------
+## ----advanced_example, fig.width=12, fig.height=8-----------------------------
 # Define gene groups
 gene_groups <- list(
   "T_cell_markers" = c("CD3D", "CD3E", "CD8A", "IL32"),
@@ -83,7 +87,23 @@ seurat_obj@meta.data <- seurat_obj@meta.data %>%
 head(seurat_obj@meta.data[, c("timepoint", "celltype", "time_celltype","cluster_time")])
 
 
-## ----color_customization, fig.width=10, fig.height=8--------------------------
+## ----test_custom_titles, fig.width=12, fig.height=8---------------------------
+heatmap <- create_single_cell_complex_heatmap(
+  seurat_object = seurat_obj,
+  features = features,
+  gene_classification = gene_groups,
+  group_by = "group",
+  time_points_order = c("Mock", "6hpi", "24hpi"),
+  
+  # NEW: Custom annotation titles
+  gene_group_title = "Gene Function",
+  time_point_title = "Time Point", 
+  cell_type_title = "Cell Type",
+  
+  split_by = "time"
+)
+
+## ----color_customization, fig.width=12, fig.height=8--------------------------
 # Custom color schemes
 heatmap_colors <- create_single_cell_complex_heatmap(
   seurat_object = seurat_obj,
@@ -97,7 +117,47 @@ heatmap_colors <- create_single_cell_complex_heatmap(
   celltype_color_palette = "Pastel1"
 )
 
-## ----font_customization, fig.width=10, fig.height=8---------------------------
+## ----test_ggsci_colors, fig.width=12, fig.height=8----------------------------
+if (requireNamespace("ggsci", quietly = TRUE)) {
+  heatmap_colors <- create_single_cell_complex_heatmap(
+    seurat_object = seurat_obj,
+    features = features,
+    gene_classification = gene_groups,
+    group_by = "group",
+    time_points_order = c("Mock", "6hpi", "24hpi"),
+    
+    # NEW: Using ggsci color vectors
+    gene_color_palette = pal_npg()(3),
+    time_color_palette = pal_lancet()(3),
+    celltype_color_palette = pal_jama()(4),
+    
+    # Custom expression heatmap colors
+    color_range = c(-2, 0, 2),
+    color_palette = c("#2166AC", "#F7F7F7", "#B2182B")
+  )
+} 
+
+## ----test_viridis_custom_colors, fig.width=12, fig.height=8-------------------
+if (requireNamespace("ggsci", quietly = TRUE)) {
+  heatmap_colors <- create_single_cell_complex_heatmap(
+    seurat_object = seurat_obj,
+    features = features,
+    gene_classification = gene_groups,
+    group_by = "group",
+    time_points_order = c("Mock", "6hpi", "24hpi"),
+    
+    # NEW: Using ggsci color vectors
+    gene_color_palette = pal_npg()(3),
+    time_color_palette = pal_lancet()(3),
+    celltype_color_palette = pal_jama()(4),
+    
+    # Custom expression heatmap colors
+    color_range = c(-2, 0, 2),
+    color_palette = c("#2166AC", "#F7F7F7", "#B2182B")
+  )
+} 
+
+## ----font_customization, fig.width=12, fig.height=8---------------------------
 # Publication-ready styling
 heatmap_publication <- create_single_cell_complex_heatmap(
   seurat_object = seurat_obj,
@@ -106,7 +166,7 @@ heatmap_publication <- create_single_cell_complex_heatmap(
   group_by = "group",
   max_circle_size = 2.5,
   row_fontsize = 12,
-  col_fontsize = 10,
+  col_fontsize = 12,
   row_title_fontsize = 14,
   col_title_fontsize = 12,
   percentage_legend_title = "Fraction of cells",
@@ -114,7 +174,44 @@ heatmap_publication <- create_single_cell_complex_heatmap(
   legend_side = "right"
 )
 
-## ----clustering_control, fig.width=10, fig.height=8---------------------------
+## ----test_visual_control, fig.width=12, fig.height=8--------------------------
+heatmap_con <- create_single_cell_complex_heatmap(
+  seurat_object = seurat_obj,
+  features = features,
+  gene_classification = gene_groups,
+  group_by = "group",
+  
+  # NEW: Visual control parameters
+  show_cell_borders = FALSE,
+  show_column_annotation = FALSE,
+  
+  # Other parameters for a clean plot
+  split_by = "none",
+  cluster_cells = TRUE
+)
+
+## ----test_gene_mapping, fig.width=12, fig.height=8----------------------------
+# Create a mapping for a subset of genes
+gene_mapping <- c(
+  "CD3D" = "T-cell Receptor CD3d",
+  "CD79A" = "B-cell Antigen Receptor CD79a",
+  "GZMK" = "Granzyme K",
+  "NKG7" = "Natural Killer Cell Granule Protein 7"
+)
+
+heatmap_map <- create_single_cell_complex_heatmap(
+  seurat_object = seurat_obj,
+  features = features,
+  gene_classification = gene_groups,
+  group_by = "group",
+  
+  # NEW: Gene name mapping
+  gene_name_mapping = gene_mapping,
+  
+  row_fontsize = 9
+)
+
+## ----clustering_control, fig.width=12, fig.height=8---------------------------
 # Custom clustering
 heatmap_clustering <- create_single_cell_complex_heatmap(
   seurat_object = seurat_obj,
@@ -141,7 +238,7 @@ heatmap_time <- create_single_cell_complex_heatmap(
   show_time_annotation = TRUE
 )
 
-## ----cell_type, fig.width=10, fig.height=8------------------------------------
+## ----cell_type, fig.width=12, fig.height=8------------------------------------
 # Cell type focused analysis
 heatmap_celltype <- create_single_cell_complex_heatmap(
   seurat_object = seurat_obj,
@@ -154,7 +251,7 @@ heatmap_celltype <- create_single_cell_complex_heatmap(
 
 ## ----simple, fig.width=8, fig.height=6----------------------------------------
 # Simple analysis
-heatmap_simple <- create_single_cell_complex_heatmap(
+heatmap_sample <- create_single_cell_complex_heatmap(
   seurat_object = seurat_obj,
   features = features,
   gene_classification = NULL,  # No gene grouping
@@ -162,6 +259,44 @@ heatmap_simple <- create_single_cell_complex_heatmap(
   show_time_annotation = FALSE,
   show_celltype_annotation = FALSE,
   split_by = "none"
+)
+
+## ----test_comprehensive, fig.width=14, fig.height=12--------------------------
+create_single_cell_complex_heatmap(
+  seurat_object = seurat_obj,
+  features = features,
+  gene_classification = gene_groups,
+  group_by = "group",
+  time_points_order = c("Mock", "6hpi", "24hpi"),
+  
+  # --- New Features ---
+  gene_group_title = "Functional Category",
+  time_point_title = "Time Post-Infection",
+  cell_type_title = "Cell Identity",
+  show_cell_borders = TRUE,
+  cell_border_color = "white",
+  gene_name_mapping = c("MS4A1" = "CD20"),
+  
+  # --- Color Customization ---
+  color_range = c(-2, 0, 2),
+  color_palette = c("#0072B2", "white", "#D55E00"), # Colorblind-friendly
+  gene_color_palette = "Dark2",
+  time_color_palette = "Set2",
+  celltype_color_palette = "Paired",
+  
+  # --- Layout and Font ---
+  row_fontsize = 10,
+  col_fontsize = 9,
+  row_title_fontsize = 12,
+  col_title_fontsize = 12,
+  col_name_rotation = 45,
+  legend_side = "right",
+  merge_legends = TRUE,
+  
+  # --- Clustering and Splitting ---
+  cluster_features = FALSE, # Rows are already grouped
+  cluster_cells = FALSE,    # Columns are already grouped
+  split_by = "time"
 )
 
 ## ----helper_1-----------------------------------------------------------------

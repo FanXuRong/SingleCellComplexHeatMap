@@ -37,28 +37,20 @@ Extracts and reshapes expression data from a Seurat DotPlot object into
 matrices suitable for complex heatmap visualization.
 }
 \examples{
-\dontrun{
+# Load a small example Seurat object
+data("pbmc_small", package = "SeuratObject")
+features <- c("CD3D", "CD79A", "MS4A1")
+
 # Basic usage
 matrices <- prepare_expression_matrices(
-  seurat_object = my_seurat,
-  features = c("Gene1", "Gene2", "Gene3"),
-  group_by = "cell_type"
-)
-
-# Advanced usage with specific cell groups
-matrices <- prepare_expression_matrices(
-  seurat_object = my_seurat,
-  features = gene_list,
-  group_by = "timepoint_celltype",
-  idents = c("0h_T_cell", "6h_T_cell", "12h_T_cell"),
-  split_pattern = "_"
+  seurat_object = pbmc_small,
+  features = features,
+  group_by = "RNA_snn_res.0.8"
 )
 
 # Access the results
 expression_matrix <- matrices$exp_mat
 percentage_matrix <- matrices$percent_mat
-original_data <- matrices$dotplot_data
-}
 
 }
 \seealso{

@@ -54,6 +54,12 @@ create_single_cell_complex_heatmap(
   show_feature_names = TRUE,
   feature_names_gp = NULL,
   legend_title = "Expression",
+  gene_group_title = "Gene Group",
+  time_point_title = "Time Point",
+  cell_type_title = "Cell Type",
+  show_cell_borders = TRUE,
+  show_column_annotation = TRUE,
+  gene_name_mapping = NULL,
   ...
 )
 }
@@ -98,11 +104,11 @@ create_single_cell_complex_heatmap(
 
 \item{split_pattern}{Character string used to split column names for parsing (default: "_")}
 
-\item{gene_color_palette}{Character string specifying RColorBrewer palette for gene groups (default: "Set1")}
+\item{gene_color_palette}{Character string specifying palette name OR character vector of colors for gene groups (default: "Set1")}
 
-\item{time_color_palette}{Character string specifying RColorBrewer palette for time points (default: "Accent")}
+\item{time_color_palette}{Character string specifying palette name OR character vector of colors for time points (default: "Accent")}
 
-\item{celltype_color_palette}{Character string specifying RColorBrewer palette for cell types (default: "Dark2")}
+\item{celltype_color_palette}{Character string specifying palette name OR character vector of colors for cell types (default: "Dark2")}
 
 \item{show_gene_grouping}{Logical indicating whether to show gene grouping (default: TRUE if gene_classification provided)}
 
@@ -155,6 +161,18 @@ create_single_cell_complex_heatmap(
 \item{feature_names_gp}{gpar object controlling feature name appearance}
 
 \item{legend_title}{Character; title for main heatmap legend}
+
+\item{gene_group_title}{Character string for gene group annotation title (default: "Gene Group")}
+
+\item{time_point_title}{Character string for time point annotation title (default: "Time Point")}
+
+\item{cell_type_title}{Character string for cell type annotation title (default: "Cell Type")}
+
+\item{show_cell_borders}{Logical indicating whether to show cell border lines (default: TRUE)}
+
+\item{show_column_annotation}{Logical indicating whether to show column annotations (default: TRUE)}
+
+\item{gene_name_mapping}{Named character vector for mapping gene names, where names are original gene names and values are display names (default: NULL)}
 
 \item{...}{Additional arguments passed to ComplexHeatmap::Heatmap()}
 }

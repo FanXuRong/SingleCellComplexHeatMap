@@ -11,6 +11,10 @@ A R package for creating complex heatmaps for single cell RNA-seq data that simu
 - **Flexible Display Options**: Show/hide different annotation layers (gene groups, time points, cell types)
 - **Highly Customizable**: Extensive parameters for colors, sizes, fonts, and layouts
 - **Seurat Integration**: Direct integration with Seurat objects
+- **Enhanced Color Support**: Compatible with multiple R color packages (RColorBrewer, ggsci, viridis, custom colors)
+- **Customizable Annotations**: User-defined titles for gene groups, time points, and cell types
+- **Flexible Visual Control**: Optional cell borders and column annotations
+- **Gene Name Mapping**: Custom display names for genes on y-axis
 
 ## Installation
 
@@ -61,20 +65,28 @@ devtools::install_local("/path/to/SingleCellComplexHeatMap")
 
 #### Visual Appearance Parameters
 - **`cell_border_color`** - Character string specifying cell border color (default: `"grey80"`)
+- **`show_cell_borders`** - **NEW**: Logical indicating whether to show cell border lines (default: `TRUE`)
 
 #### Data Parsing Parameters
 - **`split_pattern`** - Character string used to split column names for parsing (default: `"_"`)
 
 #### Color Palette Parameters
-- **`gene_color_palette`** - Character string specifying RColorBrewer palette for gene groups (default: `"Set1"`)
-- **`time_color_palette`** - Character string specifying RColorBrewer palette for time points (default: `"Accent"`)
-- **`celltype_color_palette`** - Character string specifying RColorBrewer palette for cell types (default: `"Dark2"`)
+- **`gene_color_palette`** - **ENHANCED**: Character string specifying palette name OR character vector of colors for gene groups (default: `"Set1"`)
+- **`time_color_palette`** - **ENHANCED**: Character string specifying palette name OR character vector of colors for time points (default: `"Accent"`)
+- **`celltype_color_palette`** - **ENHANCED**: Character string specifying palette name OR character vector of colors for cell types (default: `"Dark2"`)
 
 #### Display Control Parameters
 - **`show_gene_grouping`** - Logical indicating whether to show gene grouping (default: `TRUE` if gene_classification provided)
 - **`show_time_annotation`** - Logical indicating whether to show time point annotation (default: `TRUE`)
 - **`show_celltype_annotation`** - Logical indicating whether to show cell type annotation (default: `TRUE`)
+- **`show_column_annotation`** - **NEW**: Logical indicating whether to show column annotations (default: `TRUE`)
 - **`split_by`** - Character string specifying how to split columns: `"time"`, `"celltype"`, or `"none"` (default: `"time"`)
+
+#### Customization Parameters (NEW)
+- **`gene_group_title`** - Character string for gene group annotation title (default: `"Gene Group"`)
+- **`time_point_title`** - Character string for time point annotation title (default: `"Time Point"`)
+- **`cell_type_title`** - Character string for cell type annotation title (default: `"Cell Type"`)
+- **`gene_name_mapping`** - Named character vector for mapping gene names, where names are original gene names and values are display names (default: `NULL`)
 
 ### Helper Functions
 
@@ -97,8 +109,9 @@ create_gene_annotations(
   exp_mat,                 # Required: Expression matrix
   percent_mat,             # Required: Percentage matrix
   gene_classification,     # Required: Gene groups
-  color_palette = "Set1",
-  sort_within_groups = TRUE
+  color_palette = "Set1",  # ENHANCED: Now supports color vectors
+  sort_within_groups = TRUE,
+  annotation_title = "Gene Group"  # NEW: Custom title
 )
 ```
 
@@ -112,10 +125,12 @@ create_cell_annotations(
   celltype_start = 2,
   time_points_order = NULL,
   cell_types_order = NULL,
-  time_color_palette = "Accent",
-  celltype_color_palette = "Dark2",
+  time_color_palette = "Accent",    # ENHANCED: Now supports color vectors
+  celltype_color_palette = "Dark2", # ENHANCED: Now supports color vectors
   show_time_annotation = TRUE,
-  show_celltype_annotation = TRUE
+  show_celltype_annotation = TRUE,
+  time_point_title = "Time Point",  # NEW: Custom title
+  cell_type_title = "Cell Type"     # NEW: Custom title
 )
 ```
 
@@ -187,7 +202,13 @@ heatmap <- create_single_cell_complex_heatmap(
   show_gene_grouping = TRUE,
   show_time_annotation = TRUE,
   show_celltype_annotation = TRUE,
-  split_by = "celltype"
+  split_by = "celltype",
+  gene_group_title = "Gene Categories",
+  time_point_title = "Treatment Time",
+  cell_type_title = "Cell Types",
+  show_cell_borders = TRUE,
+  show_column_annotation = TRUE,
+  gene_name_mapping = NULL
 )
 ```
 
@@ -284,7 +305,12 @@ heatmap <- create_single_cell_complex_heatmap(
   percentage_legend_title = "Fraction of cells",
   percentage_legend_labels = c("0", "0.25", "0.50", "0.75", "1.0"),
   legend_side = "right",
-  merge_legends = TRUE
+  merge_legends = TRUE,
+  gene_group_title = "Functional Categories",
+  time_point_title = "Time Points",
+  cell_type_title = "Cell Types",
+  show_cell_borders = TRUE,
+  cell_border_color = "white"
 )
 ```
 
@@ -313,9 +339,9 @@ This section details all parameters for the `create_single_cell_complex_heatmap`
 * `` `legend_side` ``: Character string specifying legend position ("left", "right", "top", "bottom"). (Default: `"right"`)
 * `` `cell_border_color` ``: Character string specifying cell border color. Use `NA` for no border. (Default: `"grey80"`)
 * `` `split_pattern` ``: Character string used to split column names for parsing time points and cell types. (Default: `"_"` )
-* `` `gene_color_palette` ``: Character string specifying RColorBrewer palette for gene groups. (Default: `"Set1"`)
-* `` `time_color_palette` ``: Character string specifying RColorBrewer palette for time points. (Default: `"Accent"`)
-* `` `celltype_color_palette` ``: Character string specifying RColorBrewer palette for cell types. (Default: `"Dark2"`)
+* `` `gene_color_palette` ``: **ENHANCED**: Character string specifying palette name OR character vector of colors for gene groups. (Default: `"Set1"`)
+* `` `time_color_palette` ``: **ENHANCED**: Character string specifying palette name OR character vector of colors for time points. (Default: `"Accent"`)
+* `` `celltype_color_palette` ``: **ENHANCED**: Character string specifying palette name OR character vector of colors for cell types. (Default: `"Dark2"`)
 * `` `show_gene_grouping` ``: Logical indicating whether to show gene grouping annotation. (Default: `NULL`, resolves to `TRUE` if `gene_classification` is provided, else `FALSE`)
 * `` `show_time_annotation` ``: Logical indicating whether to show time point annotation. (Default: `TRUE`)
 * `` `show_celltype_annotation` ``: Logical indicating whether to show cell type annotation. (Default: `TRUE`)
@@ -328,6 +354,14 @@ This section details all parameters for the `create_single_cell_complex_heatmap`
 * `` `plot_width` ``: Numeric specifying plot width in inches when saving. (Default: `10`)
 * `` `plot_height` ``: Numeric specifying plot height in inches when saving. (Default: `8`)
 * `` `plot_dpi` ``: Numeric specifying plot resolution in DPI when saving. (Default: `300`)
+
+### New Customization Parameters
+* `` `gene_group_title` ``: **NEW**: Character string for gene group annotation title. (Default: `"Gene Group"`)
+* `` `time_point_title` ``: **NEW**: Character string for time point annotation title. (Default: `"Time Point"`)
+* `` `cell_type_title` ``: **NEW**: Character string for cell type annotation title. (Default: `"Cell Type"`)
+* `` `show_cell_borders` ``: **NEW**: Logical indicating whether to show cell border lines. (Default: `TRUE`)
+* `` `show_column_annotation` ``: **NEW**: Logical indicating whether to show column annotations. (Default: `TRUE`)
+* `` `gene_name_mapping` ``: **NEW**: Named character vector for mapping gene names, where names are original gene names and values are display names. (Default: `NULL`)
 
 ### Data Source Control
 * `` `assay` ``: Character string specifying which assay to use from Seurat object. (Default: `NULL`, uses active assay)
@@ -426,12 +460,3 @@ The package automatically parses:
 ## License
 
 MIT License - see LICENSE file for details.
-
-## Citation
-
-If you use this package in your research, please cite:
-
-```
-SingleCellComplexHeatMap: Complex Heatmaps for Single Cell Expression Data
-XueCheng (2024)
-```

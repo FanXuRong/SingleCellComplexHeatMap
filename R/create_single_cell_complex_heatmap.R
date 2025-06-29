@@ -25,15 +25,15 @@
 #' @param legend_side Character string specifying legend position (default: "right")
 #' @param cell_border_color Character string specifying cell border color (default: "grey80")
 #' @param split_pattern Character string used to split column names for parsing (default: "_")
-#' @param gene_color_palette Character string specifying RColorBrewer palette for gene groups (default: "Set1")
-#' @param time_color_palette Character string specifying RColorBrewer palette for time points (default: "Accent")
-#' @param celltype_color_palette Character string specifying RColorBrewer palette for cell types (default: "Dark2")
+#' @param gene_color_palette Character string specifying palette name OR character vector of colors for gene groups (default: "Set1")
+#' @param time_color_palette Character string specifying palette name OR character vector of colors for time points (default: "Accent")
+#' @param celltype_color_palette Character string specifying palette name OR character vector of colors for cell types (default: "Dark2")
 #' @param show_gene_grouping Logical indicating whether to show gene grouping (default: TRUE if gene_classification provided)
 #' @param show_time_annotation Logical indicating whether to show time point annotation (default: TRUE)
 #' @param show_celltype_annotation Logical indicating whether to show cell type annotation (default: TRUE)
 #' @param split_by Character string specifying how to split columns: "time", "celltype", or "none" (default: "time")
 #' @param merge_legends Logical indicating whether to merge legends (default: TRUE)
-#' @param percentage_legend_title Character string for percentage legend title (default: "Expression %")
+#' @param percentage_legend_title Character string for percentage legend title (default: "Expression \%")
 #' @param percentage_legend_labels Character vector for percentage legend labels
 #' @param percentage_breaks Numeric vector specifying actual percentage values corresponding to labels
 #' @param return_data Logical; if TRUE, return underlying data instead of drawing only
@@ -54,6 +54,12 @@
 #' @param show_feature_names Logical; whether to show feature (row) names
 #' @param feature_names_gp gpar object controlling feature name appearance
 #' @param legend_title Character; title for main heatmap legend
+#' @param gene_group_title Character string for gene group annotation title (default: "Gene Group")
+#' @param time_point_title Character string for time point annotation title (default: "Time Point")  
+#' @param cell_type_title Character string for cell type annotation title (default: "Cell Type")
+#' @param show_cell_borders Logical indicating whether to show cell border lines (default: TRUE)
+#' @param show_column_annotation Logical indicating whether to show column annotations (default: TRUE)
+#' @param gene_name_mapping Named character vector for mapping gene names, where names are original gene names and values are display names (default: NULL)
 #' @param ... Additional arguments passed to ComplexHeatmap::Heatmap()
 #'
 #' @return A ComplexHeatmap object. If return_data is TRUE, returns a list containing the heatmap object and underlying data matrices.
@@ -119,6 +125,13 @@ create_single_cell_complex_heatmap <- function(seurat_object,
                                              show_feature_names = TRUE,
                                              feature_names_gp = NULL,
                                              legend_title = "Expression",
+                                             # New customization parameters
+                                             gene_group_title = "Gene Group",
+                                             time_point_title = "Time Point",
+                                             cell_type_title = "Cell Type",
+                                             show_cell_borders = TRUE,
+                                             show_column_annotation = TRUE,
+                                             gene_name_mapping = NULL,
                                              # Ultimate flexibility
                                              ...) {
   
@@ -285,7 +298,8 @@ create_single_cell_complex_heatmap <- function(seurat_object,
       exp_mat = exp_mat_current,
       percent_mat = percent_mat_current,
       gene_classification = gene_classification,
-      color_palette = gene_color_palette
+      color_palette = gene_color_palette,
+      annotation_title = gene_group_title
     )
     exp_mat_current <- gene_annotations$exp_mat_ordered
     percent_mat_current <- gene_annotations$percent_mat_ordered
@@ -293,9 +307,9 @@ create_single_cell_complex_heatmap <- function(seurat_object,
     row_split_factor <- gene_annotations$row_split_factor
     
     # Apply custom annotation colors if provided
-    if (!is.null(annotation_colors) && "GeneGroup" %in% names(annotation_colors)) {
+    if (!is.null(annotation_colors) && gene_group_title %in% names(annotation_colors)) {
       # Update row annotation with custom colors
-      gene_annotations$row_annotation@anno_list$GeneGroup@color_mapping@colors <- annotation_colors$GeneGroup
+      gene_annotations$row_annotation@anno_list[[gene_group_title]]@color_mapping@colors <- annotation_colors[[gene_group_title]]
     }
   }
   
@@ -303,7 +317,7 @@ create_single_cell_complex_heatmap <- function(seurat_object,
   col_split_factor <- NULL
   
   # Step 3: Create cell annotations if requested
-  if (show_time_annotation || show_celltype_annotation) {
+  if ((show_time_annotation || show_celltype_annotation) && show_column_annotation) {
     cell_annotations <- create_cell_annotations(
       exp_mat = exp_mat_current,
       percent_mat = percent_mat_current,
@@ -313,7 +327,9 @@ create_single_cell_complex_heatmap <- function(seurat_object,
       time_color_palette = time_color_palette,
       celltype_color_palette = celltype_color_palette,
       show_time_annotation = show_time_annotation,
-      show_celltype_annotation = show_celltype_annotation
+      show_celltype_annotation = show_celltype_annotation,
+      time_point_title = time_point_title,
+      cell_type_title = cell_type_title
     )
     exp_mat_current <- cell_annotations$exp_mat_ordered
     percent_mat_current <- cell_annotations$percent_mat_ordered
@@ -321,16 +337,16 @@ create_single_cell_complex_heatmap <- function(seurat_object,
     
     # Apply custom annotation colors if provided
     if (!is.null(annotation_colors)) {
-      if ("TimePoint" %in% names(annotation_colors) && show_time_annotation) {
+      if (time_point_title %in% names(annotation_colors) && show_time_annotation) {
         # Update time point colors
         if (!is.null(col_annotation)) {
-          col_annotation@anno_list$TimePoint@color_mapping@colors <- annotation_colors$TimePoint
+          col_annotation@anno_list[[time_point_title]]@color_mapping@colors <- annotation_colors[[time_point_title]]
         }
       }
-      if ("CellType" %in% names(annotation_colors) && show_celltype_annotation) {
+      if (cell_type_title %in% names(annotation_colors) && show_celltype_annotation) {
         # Update cell type colors
         if (!is.null(col_annotation)) {
-          col_annotation@anno_list$CellType@color_mapping@colors <- annotation_colors$CellType
+          col_annotation@anno_list[[cell_type_title]]@color_mapping@colors <- annotation_colors[[cell_type_title]]
         }
       }
     }
@@ -339,18 +355,34 @@ create_single_cell_complex_heatmap <- function(seurat_object,
     if (split_by == "time" && show_time_annotation) {
       col_split_factor <- cell_annotations$col_split_factor
     } else if (split_by == "celltype" && show_celltype_annotation) {
-      col_split_factor <- cell_annotations$annotation_df$CellType
+      col_split_factor <- cell_annotations$annotation_df[[cell_type_title]]
     } else {
       col_split_factor <- NULL
     }
   }
   
+  # Apply gene name mapping to matrices if provided
+  if (!is.null(gene_name_mapping)) {
+    # Map row names
+    current_rownames <- rownames(exp_mat_current)
+    mapped_rownames <- current_rownames
+    
+    for (i in seq_along(current_rownames)) {
+      if (current_rownames[i] %in% names(gene_name_mapping)) {
+        mapped_rownames[i] <- gene_name_mapping[current_rownames[i]]
+      }
+    }
+    
+    rownames(exp_mat_current) <- mapped_rownames
+    rownames(percent_mat_current) <- mapped_rownames
+  }
+  
   # Step 4: Create color function for expression heatmap
   col_fun <- circlize::colorRamp2(color_range, actual_expression_palette)
   
-  # Step 5: Define cell and layer functions with custom percentage mapping
+  # Step 5: Define cell and layer functions with optional borders
   cell_fun <- function(j, i, x, y, w, h, fill) {
-    if (!is.na(cell_border_color)) {
+    if (show_cell_borders && !is.na(cell_border_color)) {
       grid.rect(x = x, y = y, width = w, height = h,
                gp = gpar(col = cell_border_color, fill = NA))
     }

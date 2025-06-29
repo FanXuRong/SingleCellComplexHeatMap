@@ -9,7 +9,8 @@ create_gene_annotations(
   percent_mat,
   gene_classification,
   color_palette = "Set1",
-  sort_within_groups = TRUE
+  sort_within_groups = TRUE,
+  annotation_title = "Gene Group"
 )
 }
 \arguments{
@@ -19,9 +20,11 @@ create_gene_annotations(
 
 \item{gene_classification}{Named list where names are group labels and values are character vectors of gene names}
 
-\item{color_palette}{Character string specifying RColorBrewer palette name (default: "Set1")}
+\item{color_palette}{Character string specifying palette name OR character vector of colors (default: "Set1")}
 
 \item{sort_within_groups}{Logical indicating whether to sort genes within each group (default: TRUE)}
+
+\item{annotation_title}{Character string for annotation title (default: "Gene Group")}
 }
 \value{
 A list containing exp_mat_ordered (reordered expression matrix), percent_mat_ordered (reordered percentage matrix), row_annotation (ComplexHeatmap row annotation object), row_split_factor (factor for row splitting), and annotation_df (data frame with gene annotations).
@@ -30,15 +33,17 @@ A list containing exp_mat_ordered (reordered expression matrix), percent_mat_ord
 Creates gene grouping annotations and reorders expression matrices based on gene classifications.
 }
 \examples{
-\dontrun{
+# Load a small example Seurat object
+data("pbmc_small", package = "SeuratObject")
+features <- c("CD3D", "CD79A", "MS4A1", "GZMK", "CCL5")
+
 # Prepare expression matrices first
-matrices <- prepare_expression_matrices(seurat_obj, features, group_by = "cell_type")
+matrices <- prepare_expression_matrices(pbmc_small, features, group_by = "RNA_snn_res.0.8")
 
 # Define gene groups
 gene_groups <- list(
-  "Immune_Response" = c("Gene1", "Gene2"),
-  "Cell_Cycle" = c("Gene3", "Gene4"),
-  "Metabolism" = c("Gene5", "Gene6")
+  "T-cell Markers" = c("CD3D", "GZMK", "CCL5"),
+  "B-cell Markers" = c("CD79A", "MS4A1")
 )
 
 # Create gene annotations
@@ -51,9 +56,6 @@ annotations <- create_gene_annotations(
 
 # Access results
 ordered_exp_mat <- annotations$exp_mat_ordered
-ordered_percent_mat <- annotations$percent_mat_ordered
-row_annotation <- annotations$row_annotation
-}
 
 }
 \seealso{

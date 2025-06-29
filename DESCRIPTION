@@ -1,7 +1,7 @@
 Package: SingleCellComplexHeatMap
 Type: Package
 Title: Complex Heatmaps for Single Cell Expression Data with Dual Information Display
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: person("XueCheng","Fang", email = "xuecheng328@gmail.com", role = c("aut", "cre"))
 Maintainer: XueCheng Fang <xuecheng328@gmail.com>
 Description: Creates complex heatmaps for single cell RNA-seq data that simultaneously 
@@ -31,6 +31,9 @@ Suggests:
     rmarkdown,
     viridis,
     devtools,
-    BiocManager
+    BiocManager,
+    ggsci,
+    SeuratObject
 URL: https://github.com/FanXuRong/SingleCellComplexHeatMap
 BugReports: https://github.com/FanXuRong/SingleCellComplexHeatMap/issues
+VignetteBuilder: knitr

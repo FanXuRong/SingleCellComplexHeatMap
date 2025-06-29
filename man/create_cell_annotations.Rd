@@ -15,7 +15,9 @@ create_cell_annotations(
   time_color_palette = "Accent",
   celltype_color_palette = "Dark2",
   show_time_annotation = TRUE,
-  show_celltype_annotation = TRUE
+  show_celltype_annotation = TRUE,
+  time_point_title = "Time Point",
+  cell_type_title = "Cell Type"
 )
 }
 \arguments{
@@ -33,13 +35,17 @@ create_cell_annotations(
 
 \item{cell_types_order}{Character vector specifying order of cell types (default: NULL for automatic)}
 
-\item{time_color_palette}{Character string specifying RColorBrewer palette for time points (default: "Accent")}
+\item{time_color_palette}{Character string specifying palette name OR character vector of colors for time points (default: "Accent")}
 
-\item{celltype_color_palette}{Character string specifying RColorBrewer palette for cell types (default: "Dark2")}
+\item{celltype_color_palette}{Character string specifying palette name OR character vector of colors for cell types (default: "Dark2")}
 
 \item{show_time_annotation}{Logical indicating whether to show time point annotation (default: TRUE)}
 
 \item{show_celltype_annotation}{Logical indicating whether to show cell type annotation (default: TRUE)}
+
+\item{time_point_title}{Character string for time point annotation title (default: "Time Point")}
+
+\item{cell_type_title}{Character string for cell type annotation title (default: "Cell Type")}
 }
 \value{
 A list containing exp_mat_ordered (reordered expression matrix), percent_mat_ordered (reordered percentage matrix), col_annotation (ComplexHeatmap column annotation object), col_split_factor (factor for column splitting based on time points), and annotation_df (data frame with column annotations).
@@ -48,26 +54,26 @@ A list containing exp_mat_ordered (reordered expression matrix), percent_mat_ord
 Parses column names to extract time points and cell types, creates annotations and reorders matrices.
 }
 \examples{
-\dontrun{
+# Load a small example Seurat object
+data("pbmc_small", package = "SeuratObject")
+pbmc_small$timepoint <- sample(c("0h", "6h"), ncol(pbmc_small), replace = TRUE)
+pbmc_small$timepoint_celltype <- paste(pbmc_small$timepoint, pbmc_small$RNA_snn_res.0.8, sep = "_")
+features <- c("CD3D", "CD79A", "MS4A1")
+
 # Prepare expression matrices first
-matrices <- prepare_expression_matrices(seurat_obj, features, group_by = "timepoint_celltype")
+matrices <- prepare_expression_matrices(pbmc_small, features, group_by = "timepoint_celltype")
 
 # Create cell annotations with custom ordering
 col_annotations <- create_cell_annotations(
   exp_mat = matrices$exp_mat,
   percent_mat = matrices$percent_mat,
   split_pattern = "_",
-  time_points_order = c("0h", "6h", "12h", "24h"),
-  cell_types_order = c("T_cell", "B_cell", "Monocyte"),
-  time_color_palette = "Set2",
-  celltype_color_palette = "Dark2"
+  time_points_order = c("0h", "6h"),
+  cell_types_order = levels(pbmc_small$RNA_snn_res.0.8)
 )
 
 # Access results
 ordered_exp_mat <- col_annotations$exp_mat_ordered
-col_annotation <- col_annotations$col_annotation
-col_split_factor <- col_annotations$col_split_factor
-}
 
 }
 \seealso{
